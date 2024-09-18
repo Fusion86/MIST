@@ -36,9 +36,15 @@ class Tile():
             else:
                 if self.exists():
                     self.data = skimage.io.imread(self.filepath)
+                    if len(self.data.shape) == 3:
+
+                        self.data = np.mean(self.data, axis=2).astype(np.uint8)
                 return self.data
         if self.exists():
-            return skimage.io.imread(self.filepath)
+            img = skimage.io.imread(self.filepath)
+            if len(img.shape) == 3:
+                img = np.mean(img, axis=2).astype(np.uint8)
+            return img
 
     def exists(self):
         return os.path.exists(self.filepath)
