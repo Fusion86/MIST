@@ -19,4 +19,4 @@ conda create -n mist python=3.11 -y
 # activate the virtual environment
 conda activate mist
 
-conda install numpy scikit-image -y
+pip install numpy pandas scikit-image

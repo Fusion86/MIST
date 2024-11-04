@@ -1,7 +1,6 @@
 import os
 import numpy as np
 import skimage.io
-import logging
 
 
 def assemble_image(global_positions_filepath, images_dirpath, output_filepath):
@@ -59,27 +58,29 @@ def assemble_image(global_positions_filepath, images_dirpath, output_filepath):
     stitched_img_w = tile_w + np.max(pixel_x_position)
 
     # creating blank image
-    logging.info('Creating blank stitched image of size: ({}, {}, {})'.format(stitched_img_h, stitched_img_w, n_channels))
-    stitched_img = np.zeros((stitched_img_h, stitched_img_w, n_channels), dtype=first_tile.dtype)
+    print('Creating blank stitched image of size: ({}, {}, {})'.format(stitched_img_h, stitched_img_w, n_channels))
+    if n_channels == 1:
+        stitched_img = np.zeros((stitched_img_h, stitched_img_w), dtype=first_tile.dtype)
+    else:
+        stitched_img = np.zeros((stitched_img_h, stitched_img_w, n_channels), dtype=first_tile.dtype)
 
     for i in range(0, len(img_names)):
         fn = img_names[i]
         x = pixel_x_position[i]
         y = pixel_y_position[i]
-        logging.debug('Img {}/{}. Placing {} at ({}, {})'.format(i, len(img_names), fn, x, y))
+        print('Img {}/{}. Placing {} at ({}, {})'.format(i, len(img_names), fn, x, y))
         tile = skimage.io.imread(os.path.join(images_dirpath, fn))
         if tile.shape != tile_shape:
             raise RuntimeError('All images must be the same shape. Image {} is {}, expected {}'.format(fn, tile.shape, tile_shape))
         if tile.dtype != first_tile.dtype:
             raise RuntimeError('Img {} has type: {}, expected {}.'.format(fn, tile.dtype, first_tile.dtype))
 
-        if len(tile.shape) == 2:
-            tile = np.expand_dims(tile, axis=2)
-        stitched_img[y:y+tile_h, x:x+tile_w, :] = tile
+        if n_channels == 1:
+            stitched_img[y:y+tile_h, x:x+tile_w] = tile
+        else:
+            stitched_img[y:y+tile_h, x:x+tile_w, :] = tile
 
-    if n_channels == 1:
-        stitched_img = np.squeeze(stitched_img, axis=2)
-    logging.info('Saving stitched image to disk')
+    print('Saving stitched image to disk')
     skimage.io.imsave(output_filepath, stitched_img, plugin=None, tile=(1024, 1024), check_contrast=False)
 
 

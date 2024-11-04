@@ -19,10 +19,15 @@ class TileGrid():
         self.img_height = None
         self.img_width = None
 
-        # init a 2d list to hold Tiles
-        self.tiles = [[None for _ in range(self.args.grid_width)] for _ in range(self.args.grid_height)]
-        self.height = self.args.grid_height
-        self.width = self.args.grid_width
+        if 'grid_width' in vars(args) and 'grid_height' in vars(args):
+            # init a 2d list to hold Tiles
+            self.tiles = [[None for _ in range(self.args.grid_width)] for _ in range(self.args.grid_height)]
+            self.height = self.args.grid_height
+            self.width = self.args.grid_width
+        else:
+            self.tiles = None
+            self.height = None
+            self.width = None
 
     def load_images_into_memory(self):
         for r in range(self.args.grid_height):
@@ -337,3 +342,37 @@ class TileGridSequential(TileGrid):
                     self.tiles[r][c] = other
                     other.r = r
                     self.tiles[row_offset][c] = None
+
+
+
+class TileGridFromCsv(TileGrid):
+
+    def __init__(self, args: argparse.Namespace):
+        super().__init__(args)
+
+        if not os.path.exists(self.args.grid_csv_filepath):
+            raise RuntimeError("Grid csv file does not exist: {}".format(self.args.grid_csv_filepath))
+
+        self.tiles = list()
+        import pandas as pd
+        df = pd.read_csv(self.args.grid_csv_filepath, header=None)
+        self.height = df.shape[0]
+        self.width = df.shape[1]
+        # add grid size to args namespace
+        self.args.grid_height = self.height
+        self.args.grid_width = self.width
+
+
+        # init a 2d list to hold Tiles
+        self.tiles = [[None for _ in range(self.width)] for _ in range(self.height)]
+        for row in range(self.height):
+            for col in range(self.width):
+                fn = df.iloc[row, col]
+                if not isinstance(fn, str):
+                    continue
+                fn = fn.strip()
+                if len(fn) == 0:
+                    continue
+                if os.path.exists(os.path.join(self.args.image_dirpath, fn)):
+                    t = img_tile.Tile(row, col, os.path.join(self.args.image_dirpath, fn), disable_cache=self.args.disable_mem_cache)
+                    self.tiles[row][col] = t
