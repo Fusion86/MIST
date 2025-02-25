@@ -49,6 +49,7 @@ public class RowColTileGridLoader extends TileGridLoader {
 
   private GridOrigin origin;
   private String rowMatcher;
+  private String imageDir;
 
   /**
    * Initializes the row column tile grid loader
@@ -64,9 +65,10 @@ public class RowColTileGridLoader extends TileGridLoader {
    * Function will use startTile with a Sequential LoaderType and (startTileRow, startTileCol) with a ROWCOL LoaderType
    */
   public RowColTileGridLoader(int gridWidth, int gridHeight, int startTile, int startTileRow, int startTileCol, String filePattern,
-                              GridOrigin origin) {
+                              GridOrigin origin, String imageDir) {
     super(gridWidth, gridHeight, startTile, startTileRow, startTileCol, filePattern);
     this.origin = origin;
+    this.imageDir = imageDir;
 
     initRowMatcher();
 
@@ -136,8 +138,9 @@ public class RowColTileGridLoader extends TileGridLoader {
       int gridCol = startCol;
       for (int col = 0; col < super.getGridWidth(); col++) {
         String fileName = String.format(colMatcher, col + super.getStartTileCol());
+        String resolvedFileName = TileGridLoaderUtils.resolveFileName(this.imageDir, fileName);
 
-        super.setTileName(gridRow, gridCol, fileName);
+        super.setTileName(gridRow, gridCol, resolvedFileName);
 
         gridCol += colIncrementer;
 
@@ -183,7 +186,7 @@ public class RowColTileGridLoader extends TileGridLoader {
 
     for (GridOrigin origin : GridOrigin.values()) {
       System.out.println("Origin: " + origin);
-      RowColTileGridLoader loader = new RowColTileGridLoader(10, 10, 0, 0, 0, "F_{rr}_{cc}.tif", origin);
+      RowColTileGridLoader loader = new RowColTileGridLoader(10, 10, 0, 0, 0, "F_{rr}_{cc}.tif", origin, "fake");
       loader.printNumberGrid();
       System.out.println();
     }

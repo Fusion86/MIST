@@ -19,6 +19,11 @@
 package gov.nist.isg.mist.lib.tilegrid.loader;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +65,7 @@ public class TileGridLoaderUtils {
         while (matcher.find()) {
           Log.msg(LogType.MANDATORY, matcher.group());
         }
-        throw new IllegalArgumentException("Incorect filePattern: " + filePattern);
+        throw new IllegalArgumentException("Incorrect filePattern: " + filePattern);
       }
       return 0;
 
@@ -98,7 +103,7 @@ public class TileGridLoaderUtils {
         while (matcher.find()) {
           Log.msg(LogType.MANDATORY, matcher.group());
         }
-        throw new IllegalArgumentException("Incorect filePattern: " + filePattern);
+        throw new IllegalArgumentException("Incorrect filePattern: " + filePattern);
       }
       return null;
 
@@ -255,6 +260,7 @@ public class TileGridLoaderUtils {
     if (fileName == null)
       return false;
 
+    fileName = TileGridLoaderUtils.resolveFileName(imageDir, fileName);
     File file = new File(imageDir, fileName);
 
     if (file.exists())
@@ -294,5 +300,16 @@ public class TileGridLoaderUtils {
           + "files in your image directory.");
     }
     return false;
+  }
+
+  public static String resolveFileName(String imageDir, String fileName) {
+    try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(imageDir), fileName)) {
+      for (Path p : stream) {
+        return p.getFileName().toString();
+      }
+    } catch (java.io.IOException e) {
+      throw new RuntimeException(e);
+    }
+    throw new RuntimeException("No files found with glob '" + fileName + "'.");
   }
 }

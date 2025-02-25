@@ -30,6 +30,7 @@ import gov.nist.isg.mist.lib.imagetile.ImageTile;
 import gov.nist.isg.mist.lib.log.Log;
 import gov.nist.isg.mist.lib.log.Log.LogType;
 import gov.nist.isg.mist.lib.tilegrid.loader.TileGridLoader;
+import gov.nist.isg.mist.lib.tilegrid.loader.TileGridLoaderUtils;
 
 /**
  * Class that generates a grid of tiles. Given an origin and numbering strategy. <p> The grid can be
@@ -430,6 +431,7 @@ public class TileGrid<T extends ImageTile<?>> {
       for (int c = 0; c < this.gridLoader.getGridWidth(); c++) {
 
         String fileName = this.gridLoader.getTileName(r, c);
+        fileName = TileGridLoaderUtils.resolveFileName(this.imageDir.getPath(), fileName);
 
         try {
           this.tiles[r][c] = (T) constructor.newInstance(new File(this.imageDir, fileName), r, c, this.extentWidth, this.extentHeight,

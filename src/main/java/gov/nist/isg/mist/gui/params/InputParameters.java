@@ -144,7 +144,7 @@ public class InputParameters implements StitchingAppParamFunctions {
       case ROWCOL:
         // Function will use startTile with a Sequential LoaderType and (startRow, startCol) with a ROWCOL LoaderType
         return new RowColTileGridLoader(this.getGridWidth(), this.getGridHeight(),
-            this.getStartTile(), this.getStartTileRow(), this.getStartTileCol(), this.parseTimeSlicePattern(timeSlice, false), this.getOrigin());
+            this.getStartTile(), this.getStartTileRow(), this.getStartTileCol(), this.parseTimeSlicePattern(timeSlice, false), this.getOrigin(), this.getImageDir());
       case SEQUENTIAL:
         // Function will use startTile with a Sequential LoaderType and (startRow, startCol) with a ROWCOL LoaderType
         return new SequentialTileGridLoader(this.getGridWidth(), this.getGridHeight(),
@@ -166,7 +166,7 @@ public class InputParameters implements StitchingAppParamFunctions {
       case ROWCOL:
         // Function will use startTile with a Sequential LoaderType and (startRow, startCol) with a ROWCOL LoaderType
         return new RowColTileGridLoader(this.getGridWidth(), this.getGridHeight(),
-            this.getStartTile(), this.getStartTileRow(), this.getStartTileCol(), this.getFilenamePattern(), this.getOrigin());
+            this.getStartTile(), this.getStartTileRow(), this.getStartTileCol(), this.getFilenamePattern(), this.getOrigin(), this.getImageDir());
       case SEQUENTIAL:
         // Function will use startTile with a Sequential LoaderType and (startRow, startCol) with a ROWCOL LoaderType
         return new SequentialTileGridLoader(this.getGridWidth(), this.getGridHeight(),
