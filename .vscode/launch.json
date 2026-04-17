@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Attach to MIST Jar (5005)",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005,
+      "sourcePaths": [
+        "${workspaceFolder}/src/main/java"
+      ],
+      // "preLaunchTask": "Run MIST jar (debug, suspend)"
+    }
+  ]
+}

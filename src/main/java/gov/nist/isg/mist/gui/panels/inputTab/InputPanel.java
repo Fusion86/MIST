@@ -604,6 +604,7 @@ public class InputPanel extends JPanel implements GUIParamFunctions, ActionListe
               this.startTileNumberRow, this.startTileNumberCol, false);
 
       if (fPath != null) {
+        fPath = TileGridLoaderUtils.resolveFileName(this.getImageDirectory(), fPath);
         fPath = this.getImageDirectory() + File.separator + fPath;
         ImagePlus img = new ImagePlus(fPath);
         int[] dims = img.getDimensions();
